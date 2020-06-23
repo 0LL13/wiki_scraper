@@ -51,6 +51,7 @@ class AttrDisplay:
 class _Name_default(AttrDisplay):
     middle_name_1: str = field(default=None)
     middle_name_2: str = field(default=None)
+    maiden_name: str = field(default=None)
 
 
 @dataclass
@@ -132,7 +133,7 @@ class _Politician_default:
     party: str = field(default=None)
     parties: List[str] = field(default_factory=lambda: [])
 
-    def get_ward_details(self):
+    def ward_details(self):
         if self.electoral_ward not in ['ew', 'Landesliste']:
             from bs4 import BeautifulSoup
             import requests
@@ -187,7 +188,7 @@ class Politician(_Peertitle_default, _Academic_title_default, _Person_default,
         if self.minister:
             self.offices.append(self.minister)
         if self.electoral_ward not in ['ew', 'Landesliste']:
-            _Politician_default.get_ward_details(self)
+            _Politician_default.ward_details(self)
 
 
 @dataclass
@@ -243,7 +244,8 @@ class Contri_single(AttrDisplay):
 class Speaker_default(_Peertitle_default, _Academic_title_default,
                       AttrDisplay):
     academic_title: str = field(default=None)
-    president: str = field(default=None)
+    parl_pres: str = field(default=None)
+    parl_vicePres: str = field(default=None)
     minister: str = field(default=None)
     type_of_contri: str = field(default=None)
 
@@ -266,7 +268,7 @@ class Speaker(Speaker_default, Speaker_base, AttrDisplay):
 class Session(AttrDisplay):
     # all the details concerning a parliament's sessions
     import datetime
-    date: datetime.date
+    cal_date: datetime.date
     protocol_nr: str
 
 
@@ -304,7 +306,7 @@ class MdL(_MdL_default, Politician, _MdL_base, AttrDisplay):
         Academic.__post_init__(self)
         Politician.__post_init__(self)
         if self.electoral_ward not in ['ew', 'Landesliste']:
-            _Politician_default.get_ward_details(self)
+            _Politician_default.ward_details(self)
 
 
 if __name__ == '__main__':
@@ -340,7 +342,7 @@ if __name__ == '__main__':
     print('-'*10)
 
     print(session_63)
-    print(session_63.date)
+    print(session_63.cal_date)
     print(session_63.protocol_nr)
 
     subsession_63_1 = Session_sub('14.08.2020',
